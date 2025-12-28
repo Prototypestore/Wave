@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Dimensional Purple Wave</title>
+    <title>High-Contrast Purple Wave</title>
   </head>
   <body>
     <main>
@@ -15,7 +15,7 @@
         preserveAspectRatio="none"
       >
         <defs>
-          <!-- Fade mask to transparent edges -->
+          <!-- Fade mask for transparent edges -->
           <mask id="fadeMask" maskUnits="objectBoundingBox">
             <linearGradient id="fadeGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stop-color="white" stop-opacity="0"/>
@@ -25,12 +25,12 @@
             </linearGradient>
             <rect width="1" height="1" fill="url(#fadeGradient)" />
           </mask>
-          <!-- Dimensional purple gradient for actual wave look -->
+          <!-- High-contrast purple gradient for dimensional look -->
           <linearGradient id="waveGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#d3b8ff"/>   <!-- highlights at crest -->
-            <stop offset="30%" stop-color="#8a6fff"/>  <!-- midtone -->
-            <stop offset="60%" stop-color="#4b1bbf"/>  <!-- dark trough -->
-            <stop offset="100%" stop-color="#611deb"/> <!-- base -->
+            <stop offset="0%" stop-color="#f0d6ff"/>    <!-- very bright crest -->
+            <stop offset="30%" stop-color="#9b6fff"/>   <!-- midtone -->
+            <stop offset="60%" stop-color="#2d0090"/>   <!-- deep trough -->
+            <stop offset="100%" stop-color="#611deb"/>  <!-- base -->
           </linearGradient>
           <!-- Repeating wave pattern -->
           <pattern
@@ -50,7 +50,6 @@
             />
           </pattern>
         </defs>
-        <!-- Wave rectangle with fade mask for smooth edges -->
         <rect
           id="wave-rect"
           width="100%"
