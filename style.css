@@ -6,10 +6,12 @@ body {
 
 #wave-svg {
   position: absolute;
-  width: 200%;
-  height: 120%;
-  top: -10%;
-  left: -10%;
+
+  /* Scale up to fill the page with the 12x larger wave */
+  width: 2400%;  /* 200% × 12 = 2400% */
+  height: 1440%; /* 120% × 12 = 1440% */
+  top: -20%;
+  left: -20%;
 
   /* Tilt the waves diagonally */
   transform: rotate(-8deg);
@@ -22,6 +24,7 @@ body {
     transform: rotate(-8deg) translate(0, 0);
   }
   to {
-    transform: rotate(-8deg) translate(-960px, -300px);
+    /* Translate by full pattern size (12× original 960x300) */
+    transform: rotate(-8deg) translate(-11520px, -3600px);
   }
 }
