@@ -9,23 +9,31 @@
   <body>
     <main>
       <svg
-        id="wave-svg"
-        xmlns="http://www.w3.org/2000/svg"
-        width="1940"
-        height="900"
-        viewBox="0 0 1940 900"
-      >
-        <path
-          id="wave-path"
-          d="M0 450 
-             C 320 350, 640 550, 960 450
-             C 1280 350, 1600 550, 1940 450
-             L 1940 900
-             L 0 900
-             Z"
-          fill="#611deb"
-        />
-      </svg>
+  id="wave-svg"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 1940 900"
+>
+  <defs>
+    <!-- Moving shine -->
+    <linearGradient id="shineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#611deb"/>
+      <stop offset="45%" stop-color="#7b4dff"/>
+      <stop offset="50%" stop-color="#ffffff"/>
+      <stop offset="55%" stop-color="#7b4dff"/>
+      <stop offset="100%" stop-color="#611deb"/>
+    </linearGradient>
+  </defs>
+  <path
+    id="wave-path"
+    d="M0 450 
+       C 320 350, 640 550, 960 450
+       C 1280 350, 1600 550, 1940 450
+       L 1940 900
+       L 0 900
+       Z"
+    fill="url(#shineGradient)"
+  />
+</svg>
     </main>
   </body>
 </html>
