@@ -40,18 +40,17 @@ function clamp(value, min, max) {
 function createGradient(x, y, width, height, shimmerPhase, opacity) {
   const grad = ctx.createLinearGradient(x, y, x + width, y + height);
 
-  // Base wave layers (respect opacity)
-  grad.addColorStop(0, `rgba(120,80,220,${opacity})`);        
-  grad.addColorStop(clamp(0.3 + shimmerPhase * 0.5, 0, 1), `rgba(160,100,255,${opacity})`); 
+  // Lighter base waves for high contrast even on dark screens
+  grad.addColorStop(0, `rgba(200,180,255,${opacity})`);        
+  grad.addColorStop(clamp(0.3 + shimmerPhase * 0.5, 0, 1), `rgba(220,200,255,${opacity})`); 
 
-  // Bolder shimmer layers (ignore opacity for max visibility)
-  grad.addColorStop(clamp(0.45 + shimmerPhase * 0.5, 0, 1), `rgba(255,180,255,0.9)`); // shimmerLight
-  grad.addColorStop(clamp(0.5 + shimmerPhase * 0.5, 0, 1), `rgba(255,255,255,1.0)`);   // shimmerFull (strongest)
-  grad.addColorStop(clamp(0.55 + shimmerPhase * 0.5, 0, 1), `rgba(255,180,255,0.9)`); // shimmerLight
+  // Bold shimmer highlights (fully visible)
+  grad.addColorStop(clamp(0.45 + shimmerPhase * 0.5, 0, 1), `rgba(255,230,255,0.9)`); // shimmerLight
+  grad.addColorStop(clamp(0.5 + shimmerPhase * 0.5, 0, 1), `rgba(255,255,255,1.0)`);   // shimmerFull
+  grad.addColorStop(clamp(0.55 + shimmerPhase * 0.5, 0, 1), `rgba(255,230,255,0.9)`); // shimmerLight
 
-  // Back to base wave
-  grad.addColorStop(clamp(0.7 + shimmerPhase * 0.5, 0, 1), `rgba(160,100,255,${opacity})`);
-  grad.addColorStop(1, `rgba(120,80,220,${opacity})`);
+  grad.addColorStop(clamp(0.7 + shimmerPhase * 0.5, 0, 1), `rgba(220,200,255,${opacity})`);
+  grad.addColorStop(1, `rgba(200,180,255,${opacity})`);
 
   return grad;
 }
