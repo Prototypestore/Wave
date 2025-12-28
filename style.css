@@ -1,22 +1,16 @@
 body {
   margin: 0;
   overflow: hidden;
-  background: #0e0628; /* dark background for contrast */
+  background: #0e0628;
 }
 
 #wave-svg {
   position: absolute;
-
-  /* Scaled for 12x larger wave */
   width: 2400%;
   height: 1440%;
   top: -20%;
   left: -20%;
-
-  /* Tilt the wave diagonally */
   transform: rotate(-8deg);
-
-  /* Smooth diagonal gliding animation */
   animation: waveMove 10s linear infinite;
 }
 
