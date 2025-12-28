@@ -1,0 +1,17 @@
+#wave-svg {
+  width: 100%;
+  height: 900px;
+}
+
+#wave-rect {
+  animation: waveFlow 10s linear infinite;
+}
+
+@keyframes waveFlow {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(-960px, -200px);
+  }
+}
