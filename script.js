@@ -15,7 +15,8 @@ const colors = [
   { start: '#412f6d', end: '#9571c9' },
 ];
 
-function drawWaveLayer(yBase, amplitude, wavelength, colorStart, colorEnd, shift) {
+// Draw a wave layer with smooth tilt
+function drawWaveLayer(yBase, amplitude, wavelength, colorStart, colorEnd, shift, tiltFactor) {
   const width = canvas.width;
   ctx.beginPath();
   ctx.moveTo(0, canvas.height);
@@ -24,11 +25,15 @@ function drawWaveLayer(yBase, amplitude, wavelength, colorStart, colorEnd, shift
   const waveCount = Math.floor(width / wavelength) + 2;
   for (let i = 0; i < waveCount; i++) {
     const startX = i * wavelength - (shift % wavelength);
-    const cp1x = startX + wavelength * 0.25;
+
+    // Smooth tilt: use a smaller factor for gentle, gradual angle
+    const tilt = tiltFactor * (yBase - 0); 
+
+    const cp1x = startX + wavelength * 0.25 + tilt;
     const cp1y = yBase + amplitude;
-    const cp2x = startX + wavelength * 0.75;
+    const cp2x = startX + wavelength * 0.75 + tilt;
     const cp2y = yBase - amplitude;
-    const endX = startX + wavelength;
+    const endX = startX + wavelength + tilt;
 
     ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endX, yBase);
   }
@@ -48,25 +53,21 @@ function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   offset += 1.5;
 
-  const waveBlockHeight = 250; // original 4-wave block height
-  const repeatCount = Math.ceil(canvas.height / waveBlockHeight) + 1; // extra block for smooth looping
+  const waveBlockHeight = 250; 
+  const repeatCount = Math.ceil(canvas.height / waveBlockHeight) + 2;
 
   for (let r = 0; r < repeatCount; r++) {
     const baseY = r * waveBlockHeight;
 
-    // Draw the 4 waves exactly as original, vertically offset
-    drawWaveLayer(baseY + 90, 45, 500, colors[0].start, colors[0].end, offset);
-    drawWaveLayer(baseY + 130, 50, 480, colors[1].start, colors[1].end, offset * 1.2);
-    drawWaveLayer(baseY + 170, 40, 530, colors[2].start, colors[2].end, offset * 0.9);
-    drawWaveLayer(baseY + 210, 45, 520, colors[3].start, colors[3].end, offset * 1.1);
+    drawWaveLayer(baseY + 90, 45, 500, colors[0].start, colors[0].end, offset, 0.05);
+    drawWaveLayer(baseY + 130, 50, 480, colors[1].start, colors[1].end, offset * 1.2, 0.04);
+    drawWaveLayer(baseY + 170, 40, 530, colors[2].start, colors[2].end, offset * 0.9, 0.06);
+    drawWaveLayer(baseY + 210, 45, 520, colors[3].start, colors[3].end, offset * 1.1, 0.03);
   }
 
   requestAnimationFrame(animate);
 }
 
-window.addEventListener('resize', () => {
-  resize();
-});
-
+window.addEventListener('resize', resize);
 resize();
 animate();
