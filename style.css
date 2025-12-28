@@ -1,9 +1,3 @@
-body {
-  margin: 0;
-  overflow: hidden;
-  background: #0e0628;
-}
-
 #wave-svg {
   position: absolute;
   width: 2400%;
@@ -11,14 +5,20 @@ body {
   top: -20%;
   left: -20%;
   transform: rotate(-8deg);
-  animation: waveMove 10s linear infinite;
+  /* Remove translate animation here */
 }
 
-@keyframes waveMove {
+/* Animate the pattern horizontally */
+@keyframes wavePatternMove {
   from {
-    transform: rotate(-8deg) translate(0, 0);
+    patternTransform: translateX(0);
   }
   to {
-    transform: rotate(-8deg) translate(-11520px, -3600px);
+    patternTransform: translateX(-11520px);
   }
+}
+
+/* Apply animation to the pattern element */
+#wavePattern {
+  animation: wavePatternMove 10s linear infinite;
 }
