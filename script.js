@@ -9,11 +9,12 @@ function resize() {
   canvas.height = window.innerHeight;
 }
 
+// Layers with different bend multipliers for stronger S-motion
 const layers = [
-  { dark: '#241736', light: '#8a6bff', phase: 0 },
-  { dark: '#2f214a', light: '#9b7cff', phase: Math.PI * 0.5 },
-  { dark: '#1f1538', light: '#7c63e6', phase: Math.PI },
-  { dark: '#3a2a5f', light: '#b08cff', phase: Math.PI * 1.5 },
+  { dark: '#241736', light: '#8a6bff', speed: 1.2, phase: Math.random() * Math.PI * 2, bendMultiplier: 2.0 }, // primary, strong S
+  { dark: '#2f214a', light: '#9b7cff', speed: 1.5, phase: Math.random() * Math.PI * 2, bendMultiplier: 1.0 }, // secondary
+  { dark: '#1f1538', light: '#7c63e6', speed: 1.7, phase: Math.random() * Math.PI * 2, bendMultiplier: 2.2 }, // primary, strong S
+  { dark: '#3a2a5f', light: '#b08cff', speed: 1.3, phase: Math.random() * Math.PI * 2, bendMultiplier: 1.1 }, // secondary
 ];
 
 function lerpColor(a, b, t) {
@@ -32,15 +33,8 @@ function lerpColor(a, b, t) {
   )`;
 }
 
-function drawWave(yBase, amp, wavelength, layer, speedMul, bendSpeedMul) {
+function drawWave(yBase, amp, wavelength, layer, offsetSpeed) {
   const width = canvas.width;
-
-  // Moderate S-curve motion
-  const bend = Math.sin(t * 0.008 * bendSpeedMul + layer.phase);
-  const bendX = bend * 140; // large, visible S-bend
-
-  const depth = (bend + 1) / 2;
-  const fill = lerpColor(layer.dark, layer.light, depth);
 
   ctx.beginPath();
   ctx.moveTo(0, canvas.height);
@@ -49,23 +43,34 @@ function drawWave(yBase, amp, wavelength, layer, speedMul, bendSpeedMul) {
   const count = Math.floor(width / wavelength) + 3;
 
   for (let i = 0; i < count; i++) {
-    const x = i * wavelength - (offset * speedMul % wavelength);
+    const x = i * wavelength - (offset * offsetSpeed % wavelength);
 
-    ctx.bezierCurveTo(
-      x + wavelength * 0.25 + bendX,
-      yBase + amp,
-      x + wavelength * 0.75 - bendX,
-      yBase - amp,
-      x + wavelength,
-      yBase
-    );
+    // Random phase per tile for asynchronous motion
+    const localPhase = layer.phase + i * 0.3;
+    const bend = Math.sin(t * 0.008 * layer.speed + localPhase);
+
+    // Outward/inward with stronger primary wave bend
+    const bendX = bend > 0 ? bend * 200 * layer.bendMultiplier : bend * 120 * layer.bendMultiplier;
+
+    // Color mapped to bend for depth illusion
+    const depth = (bend + 1) / 2;
+    const fill = lerpColor(layer.dark, layer.light, depth);
+
+    const cp1x = x + wavelength * 0.25 + bendX;
+    const cp1y = yBase + amp;
+    const cp2x = x + wavelength * 0.75 - bendX;
+    const cp2y = yBase - amp;
+    const endX = x + wavelength;
+
+    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endX, yBase);
   }
 
   ctx.lineTo(width, canvas.height);
   ctx.closePath();
 
+  // Gradient fill
   const grad = ctx.createLinearGradient(0, yBase - amp, 0, yBase + amp + 80);
-  grad.addColorStop(0, fill);
+  grad.addColorStop(0, lerpColor(layer.dark, layer.light, 0.5));
   grad.addColorStop(1, layer.dark);
 
   ctx.fillStyle = grad;
@@ -84,11 +89,10 @@ function animate() {
   for (let r = 0; r < repeats; r++) {
     const y = r * block;
 
-    // Moderate bend speed for smooth S-motion
-    drawWave(y + 90, 45, 520, layers[0], 1, 1.5);
-    drawWave(y + 130, 50, 500, layers[1], 1.15, 1.2);
-    drawWave(y + 170, 40, 540, layers[2], 0.9, 1.7);
-    drawWave(y + 210, 45, 530, layers[3], 1.05, 1.4);
+    drawWave(y + 90, 45, 520, layers[0], 1);
+    drawWave(y + 130, 50, 500, layers[1], 1.15);
+    drawWave(y + 170, 40, 540, layers[2], 0.9);
+    drawWave(y + 210, 45, 530, layers[3], 1.05);
   }
 
   requestAnimationFrame(animate);
@@ -97,4 +101,3 @@ function animate() {
 window.addEventListener('resize', resize);
 resize();
 animate();
-
