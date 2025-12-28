@@ -1,17 +1,19 @@
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
 #wave-svg {
-  width: 100%;
+  width: 200%;
   height: 900px;
+  animation: diagonalMove 10s linear infinite;
 }
 
-#wave-rect {
-  animation: waveFlow 10s linear infinite;
-}
-
-@keyframes waveFlow {
+@keyframes diagonalMove {
   from {
     transform: translate(0, 0);
   }
   to {
-    transform: translate(-960px, -200px);
+    transform: translate(-50%, -80px);
   }
 }
