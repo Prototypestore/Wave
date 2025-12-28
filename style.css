@@ -6,46 +6,39 @@ body {
 
 #wave-svg {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 300vw;
-  height: 200vh;
-  overflow: visible;
+  width: 2400%;
+  height: 1440%;
+  top: -20%;
+  left: -20%;
+  transform: rotate(-8deg);
 }
 
+/* Each wave moves diagonally and ripples */
 .wave {
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  will-change: transform;
-  opacity: 0.8;
-  transform-origin: 0 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
+/* Wave 1 diagonal movement and ripple */
 .wave1 {
-  animation: moveDiag1 12s linear infinite;
-  fill: url(#grad1);
-  opacity: 1;
-}
-.wave2 {
-  animation: moveDiag2 15s linear infinite;
-  fill: url(#grad2);
-  opacity: 0.75;
-}
-.wave3 {
-  animation: moveDiag3 18s linear infinite;
-  fill: url(#grad3);
-  opacity: 0.6;
+  animation: moveWave1 12s linear infinite;
 }
 
-@keyframes moveDiag1 {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(-800px, -400px); }
+/* Wave 2 slower diagonal movement for depth */
+.wave2 {
+  animation: moveWave2 18s linear infinite;
+  opacity: 0.8;
 }
-@keyframes moveDiag2 {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(-1000px, -500px); }
+
+@keyframes moveWave1 {
+  0% { transform: rotate(-8deg) translate(0,0); }
+  50% { transform: rotate(-8deg) translate(-5760px,-1800px); }
+  100% { transform: rotate(-8deg) translate(-11520px,-3600px); }
 }
-@keyframes moveDiag3 {
-  0% { transform: translate(0, 0); }
-  100% { transform: translate(-1200px, -600px); }
+
+@keyframes moveWave2 {
+  0% { transform: rotate(-8deg) translate(0,0); }
+  50% { transform: rotate(-8deg) translate(-3840px,-1200px); }
+  100% { transform: rotate(-8deg) translate(-7680px,-2400px); }
 }
