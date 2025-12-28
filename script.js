@@ -1,100 +1,69 @@
-const canvas = document.getElementById('waveCanvas');
+const canvas = document.getElementById('waves');
 const ctx = canvas.getContext('2d');
 
+// Resize canvas to full window width, fixed height 250
 function resize() {
   canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener('resize', resize);
-
-// Colors
-const darkColor = '#380f8a';
-const lightColor = '#5e17eb';
-const shimmerLight = '#ccb2ff';
-const shimmerFull = '#ffffff';
-
-// Wave settings
-const waveCount = 6; // number of overlapping waves
-const animationPeriod = 10000; // 10 seconds for perfect loop
-const baseY = canvas.height / 2;
-
-// Initialize waves
-const waves = [];
-for (let i = 0; i < waveCount; i++) {
-  waves.push({
-    amplitude: 40 + i * 10,
-    wavelength: canvas.width / (1.5 + i * 0.3),
-    speed: (0.02 + i * 0.005),  // horizontal diagonal speed
-    verticalSpeed: (0.01 + i * 0.002), // vertical fold speed
-    phase: Math.random() * 2 * Math.PI, // phase offset
-    angle: Math.PI / 4 + i * 0.02,      // diagonal angle
-  });
+  canvas.height = 250;
+  drawWaves();
 }
 
-// Clamp gradient offsets
-function clamp(value, min, max) {
-  return Math.min(Math.max(value, min), max);
+const colors = [
+  { start: '#2b1b43', end: '#6e4fb8' },
+  { start: '#3a2b5e', end: '#7c5fd6' },
+  { start: '#251a42', end: '#5a42a0' },
+  { start: '#412f6d', end: '#9571c9' },
+];
+
+// Use cubic Bézier curves for layered waves for smoothness and depth
+
+function drawWaveLayer(yBase, amplitude, wavelength, colorStart, colorEnd) {
+  const width = canvas.width;
+  ctx.beginPath();
+
+  // Start bottom-left
+  ctx.moveTo(0, canvas.height);
+
+  // Start wave at bottom left corner of wave line
+  ctx.lineTo(0, yBase);
+
+  // Create smooth wave with multiple bezier curves across the canvas width
+  const waveCount = Math.floor(width / wavelength) + 2;
+
+  for (let i = 0; i < waveCount; i++) {
+    const startX = i * wavelength;
+    const cp1x = startX + wavelength * 0.25;
+    const cp1y = yBase + amplitude;
+    const cp2x = startX + wavelength * 0.75;
+    const cp2y = yBase - amplitude;
+    const endX = startX + wavelength;
+
+    ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endX, yBase);
+  }
+
+  // Close path down to bottom right corner
+  ctx.lineTo(width, canvas.height);
+  ctx.closePath();
+
+  // Gradient fill top-to-bottom on the wave area
+  const gradient = ctx.createLinearGradient(0, yBase - amplitude, 0, yBase + amplitude + 40);
+  gradient.addColorStop(0, colorStart);
+  gradient.addColorStop(1, colorEnd);
+
+  ctx.fillStyle = gradient;
+  ctx.fill();
 }
 
-function createGradient(x, y, width, height, shimmerPhase, opacity) {
-  const grad = ctx.createLinearGradient(x, y, x + width, y + height);
-
-  // Lighter base waves for high contrast even on dark screens
-  grad.addColorStop(0, `rgba(200,180,255,${opacity})`);        
-  grad.addColorStop(clamp(0.3 + shimmerPhase * 0.5, 0, 1), `rgba(220,200,255,${opacity})`); 
-
-  // Bold shimmer highlights (fully visible)
-  grad.addColorStop(clamp(0.45 + shimmerPhase * 0.5, 0, 1), `rgba(255,230,255,0.9)`); // shimmerLight
-  grad.addColorStop(clamp(0.5 + shimmerPhase * 0.5, 0, 1), `rgba(255,255,255,1.0)`);   // shimmerFull
-  grad.addColorStop(clamp(0.55 + shimmerPhase * 0.5, 0, 1), `rgba(255,230,255,0.9)`); // shimmerLight
-
-  grad.addColorStop(clamp(0.7 + shimmerPhase * 0.5, 0, 1), `rgba(220,200,255,${opacity})`);
-  grad.addColorStop(1, `rgba(200,180,255,${opacity})`);
-
-  return grad;
-}
-
-// Wave height function with folding diagonal motion
-function getWaveY(x, t, wave) {
-  const horizontalOffset = x + t * wave.speed * canvas.width;  // diagonal movement
-  const verticalOffset = Math.sin(t * wave.verticalSpeed * 2 * Math.PI + wave.phase) * wave.amplitude; // fold
-  return verticalOffset + Math.sin((2 * Math.PI / wave.wavelength) * horizontalOffset + wave.phase) * wave.amplitude;
-}
-
-let startTime = null;
-function draw(timestamp) {
-  if (!startTime) startTime = timestamp;
-  const elapsed = timestamp - startTime;
-  const loopTime = (elapsed % animationPeriod) / animationPeriod; // normalized 0-1
-
+function drawWaves() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const stepX = 2;
-
-  waves.forEach((wave, index) => {
-    const shimmerPhase = (Math.sin(loopTime * 2 * Math.PI + index * 0.3) + 1) / 2;
-    ctx.beginPath();
-    ctx.moveTo(0, baseY);
-
-    for (let x = 0; x <= canvas.width; x += stepX) {
-      const y = baseY + getWaveY(x, loopTime * animationPeriod, wave) + loopTime * canvas.height * 0.05;
-      ctx.lineTo(x, y);
-    }
-
-    ctx.lineTo(canvas.width, canvas.height);
-    ctx.lineTo(0, canvas.height);
-    ctx.closePath();
-
-    const opacity = 0.1 + 0.15 * (index + 1); // back layers more subtle
-    ctx.fillStyle = createGradient(0, 0, canvas.width, canvas.height, shimmerPhase, opacity);
-    ctx.fill();
-  });
-
-  requestAnimationFrame(draw);
+  // Draw layers from top (front) to bottom (back)
+  drawWaveLayer(90, 45, 500, colors[0].start, colors[0].end);
+  drawWaveLayer(130, 50, 480, colors[1].start, colors[1].end);
+  drawWaveLayer(170, 40, 530, colors[2].start, colors[2].end);
+  drawWaveLayer(210, 45, 520, colors[3].start, colors[3].end);
 }
 
-window.addEventListener('load', () => {
-  resize();
-  requestAnimationFrame(draw);
-});
+window.addEventListener('resize', resize);
+
+resize();
