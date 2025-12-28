@@ -53,15 +53,21 @@ function getWaveHeight(x, t) {
   return y / waves.length;
 }
 
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
+
 function createGradient(x, y, width, height, shimmerPhase) {
   const grad = ctx.createLinearGradient(x, y, x + width, y + height);
+
   grad.addColorStop(0, darkColor);
-  grad.addColorStop(0.3 + shimmerPhase * 0.5, lightColor);
-  grad.addColorStop(0.45 + shimmerPhase * 0.5, shimmerLight);
-  grad.addColorStop(0.5 + shimmerPhase * 0.5, shimmerFull);
-  grad.addColorStop(0.55 + shimmerPhase * 0.5, shimmerLight);
-  grad.addColorStop(0.7 + shimmerPhase * 0.5, lightColor);
+  grad.addColorStop(clamp(0.3 + shimmerPhase * 0.5, 0, 1), lightColor);
+  grad.addColorStop(clamp(0.45 + shimmerPhase * 0.5, 0, 1), shimmerLight);
+  grad.addColorStop(clamp(0.5 + shimmerPhase * 0.5, 0, 1), shimmerFull);
+  grad.addColorStop(clamp(0.55 + shimmerPhase * 0.5, 0, 1), shimmerLight);
+  grad.addColorStop(clamp(0.7 + shimmerPhase * 0.5, 0, 1), lightColor);
   grad.addColorStop(1, darkColor);
+
   return grad;
 }
 
