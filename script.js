@@ -14,21 +14,23 @@ const lightColor = '#5e17eb';
 const shimmerLight = '#ccb2ff';
 const shimmerFull = '#ffffff';
 
-// Multiple waves
-const waveCount = 5; // number of overlapping waves
-const animationPeriod = 8000;
-
+// Multiple overlapping waves
+const waveCount = 5;
+const animationPeriod = 8000; // 8 seconds for perfect loop
 const waves = [];
+
 for (let i = 0; i < waveCount; i++) {
-  const amplitude = 30 + i * 15; // different height
-  const wavelength = canvas.width / (1.5 + i * 0.2);
-  const cyclesPerMs = (i + 1) / animationPeriod;
-  const speed = cyclesPerMs * 2 * Math.PI;
-  waves.push({ amplitude, wavelength, speed, phase: 0 });
+  const amplitude = 30 + i * 15;          // vertical height
+  const wavelength = canvas.width / (1.5 + i * 0.2); // horizontal wave length
+  const cyclesPerMs = (i + 1) / animationPeriod;    
+  const speed = cyclesPerMs * 2 * Math.PI;          
+  const angle = Math.PI / 4 + i * 0.05; // diagonal angle
+  waves.push({ amplitude, wavelength, speed, phase: 0, angle });
 }
 
+// Compute diagonal wave height for a given x, t
 function getWaveHeight(x, t, wave) {
-  return wave.amplitude * Math.sin((2 * Math.PI / wave.wavelength) * x + wave.phase + t * wave.speed);
+  return wave.amplitude * Math.sin((2 * Math.PI / wave.wavelength) * (x + t * 0.3) + wave.phase);
 }
 
 function clamp(value, min, max) {
@@ -55,16 +57,21 @@ function draw(timestamp) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   const shimmerPhase = (Math.sin((loopTime / animationPeriod) * 2 * Math.PI) + 1) / 2;
-  const baseY = canvas.height / 2;
   const stepX = 2;
+  const baseY = canvas.height / 2;
 
   // Draw each wave layer back-to-front
   waves.forEach((wave, index) => {
     ctx.beginPath();
+
+    // Diagonal offset
+    const dx = loopTime * 0.1; // horizontal speed
+    const dy = loopTime * 0.05; // vertical speed for diagonal effect
+
     ctx.moveTo(0, baseY);
 
     for (let x = 0; x <= canvas.width; x += stepX) {
-      const y = baseY + getWaveHeight(x, loopTime, wave);
+      const y = baseY + getWaveHeight(x + dx, loopTime, wave) + dy;
       ctx.lineTo(x, y);
     }
 
@@ -72,7 +79,6 @@ function draw(timestamp) {
     ctx.lineTo(0, canvas.height);
     ctx.closePath();
 
-    // Lower layers more transparent, front layers more visible
     const opacity = 0.2 + 0.15 * index;
     ctx.fillStyle = createGradient(0, baseY - wave.amplitude, canvas.width, wave.amplitude * 2, shimmerPhase, opacity);
     ctx.fill();
@@ -85,3 +91,4 @@ window.addEventListener('load', () => {
   resize();
   requestAnimationFrame(draw);
 });
+
