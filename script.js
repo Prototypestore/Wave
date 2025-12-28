@@ -1,11 +1,11 @@
 const canvas = document.getElementById('waves');
 const ctx = canvas.getContext('2d');
 
-// Resize canvas to full window width, fixed height 250
+let offset = 0;
+
 function resize() {
   canvas.width = window.innerWidth;
-  canvas.height = 250;
-  drawWaves();
+  canvas.height = window.innerHeight;
 }
 
 const colors = [
@@ -15,23 +15,15 @@ const colors = [
   { start: '#412f6d', end: '#9571c9' },
 ];
 
-// Use cubic Bézier curves for layered waves for smoothness and depth
-
-function drawWaveLayer(yBase, amplitude, wavelength, colorStart, colorEnd) {
+function drawWaveLayer(yBase, amplitude, wavelength, colorStart, colorEnd, shift) {
   const width = canvas.width;
   ctx.beginPath();
-
-  // Start bottom-left
   ctx.moveTo(0, canvas.height);
-
-  // Start wave at bottom left corner of wave line
   ctx.lineTo(0, yBase);
 
-  // Create smooth wave with multiple bezier curves across the canvas width
   const waveCount = Math.floor(width / wavelength) + 2;
-
   for (let i = 0; i < waveCount; i++) {
-    const startX = i * wavelength;
+    const startX = i * wavelength - (shift % wavelength);
     const cp1x = startX + wavelength * 0.25;
     const cp1y = yBase + amplitude;
     const cp2x = startX + wavelength * 0.75;
@@ -41,11 +33,9 @@ function drawWaveLayer(yBase, amplitude, wavelength, colorStart, colorEnd) {
     ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, endX, yBase);
   }
 
-  // Close path down to bottom right corner
   ctx.lineTo(width, canvas.height);
   ctx.closePath();
 
-  // Gradient fill top-to-bottom on the wave area
   const gradient = ctx.createLinearGradient(0, yBase - amplitude, 0, yBase + amplitude + 40);
   gradient.addColorStop(0, colorStart);
   gradient.addColorStop(1, colorEnd);
@@ -54,16 +44,29 @@ function drawWaveLayer(yBase, amplitude, wavelength, colorStart, colorEnd) {
   ctx.fill();
 }
 
-function drawWaves() {
+function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  offset += 1.5;
 
-  // Draw layers from top (front) to bottom (back)
-  drawWaveLayer(90, 45, 500, colors[0].start, colors[0].end);
-  drawWaveLayer(130, 50, 480, colors[1].start, colors[1].end);
-  drawWaveLayer(170, 40, 530, colors[2].start, colors[2].end);
-  drawWaveLayer(210, 45, 520, colors[3].start, colors[3].end);
+  const waveBlockHeight = 250; // original 4-wave block height
+  const repeatCount = Math.ceil(canvas.height / waveBlockHeight) + 1; // extra block for smooth looping
+
+  for (let r = 0; r < repeatCount; r++) {
+    const baseY = r * waveBlockHeight;
+
+    // Draw the 4 waves exactly as original, vertically offset
+    drawWaveLayer(baseY + 90, 45, 500, colors[0].start, colors[0].end, offset);
+    drawWaveLayer(baseY + 130, 50, 480, colors[1].start, colors[1].end, offset * 1.2);
+    drawWaveLayer(baseY + 170, 40, 530, colors[2].start, colors[2].end, offset * 0.9);
+    drawWaveLayer(baseY + 210, 45, 520, colors[3].start, colors[3].end, offset * 1.1);
+  }
+
+  requestAnimationFrame(animate);
 }
 
-window.addEventListener('resize', resize);
+window.addEventListener('resize', () => {
+  resize();
+});
 
 resize();
+animate();
