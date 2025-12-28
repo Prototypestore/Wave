@@ -1,4 +1,4 @@
-constconst canvas = document.getElementById('waveCanvas');
+const canvas = document.getElementById('waveCanvas');
 const ctx = canvas.getContext('2d');
 
 function resize() {
