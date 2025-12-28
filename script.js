@@ -69,11 +69,11 @@ function draw(timestamp) {
   const loopTime = (elapsed % animationPeriod) / animationPeriod; // normalized 0-1
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
- const shimmerPhase = (Math.sin(loopTime * 2 * Math.PI + index * 0.3) + 1) / 2;
 
   const stepX = 2;
 
   waves.forEach((wave, index) => {
+    const shimmerPhase = (Math.sin(loopTime * 2 * Math.PI + index * 0.3) + 1) / 2;
     ctx.beginPath();
     ctx.moveTo(0, baseY);
 
