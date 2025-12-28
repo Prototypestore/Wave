@@ -1,19 +1,22 @@
-const gradients = ['grad1', 'grad2', 'grad3'];
+// Animate shimmer in gradients for ripple effect
+const gradients = ['waveGradient1', 'waveGradient2'];
 
 gradients.forEach((id, i) => {
   const grad = document.getElementById(id);
   let offset = 0;
-  function animate() {
-    offset += 0.5 + i * 0.2;
-    if (offset > 100) offset = 0;
-    // Slightly shift stops offset for shimmer effect
-    for (let stop of grad.children) {
+
+  function animateShimmer() {
+    offset += 0.2 + i*0.1;
+    if(offset > 100) offset = 0;
+
+    for(let stop of grad.children){
       let currentOffset = parseFloat(stop.getAttribute('offset'));
-      // Move offset slowly and wrap around
-      let newOffset = (currentOffset + 0.002) % 1;
+      let newOffset = (currentOffset + 0.001 + i*0.0005) % 1;
       stop.setAttribute('offset', newOffset);
     }
-    requestAnimationFrame(animate);
+    requestAnimationFrame(animateShimmer);
   }
-  animate();
+
+  animateShimmer();
 });
+
