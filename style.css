@@ -20,7 +20,6 @@ body {
   animation: waveMove 10s linear infinite;
 }
 
-/* Adjustable speed and tilt here */
 @keyframes waveMove {
   from {
     transform: rotate(-8deg) translate(0, 0);
