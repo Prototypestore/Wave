@@ -36,7 +36,6 @@ for (let i = 0; i < waveCount; i++) {
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
-
 function createGradient(x, y, width, height, shimmerPhase, opacity) {
   const grad = ctx.createLinearGradient(x, y, x + width, y + height);
 
@@ -44,10 +43,10 @@ function createGradient(x, y, width, height, shimmerPhase, opacity) {
   grad.addColorStop(0, `rgba(150,130,255,${opacity})`);        
   grad.addColorStop(clamp(0.3 + shimmerPhase * 0.5, 0, 1), `rgba(180,150,255,${opacity})`); 
 
-  // Bolder shimmer layers
-  grad.addColorStop(clamp(0.45 + shimmerPhase * 0.5, 0, 1), `rgba(220,200,255,${opacity * 0.9})`); // shimmerLight
-  grad.addColorStop(clamp(0.5 + shimmerPhase * 0.5, 0, 1), `rgba(255,255,255,${opacity * 0.7})`);  // shimmerFull (still slightly less)
-  grad.addColorStop(clamp(0.55 + shimmerPhase * 0.5, 0, 1), `rgba(220,200,255,${opacity * 0.9})`); // shimmerLight
+  // Updated shimmer layers
+  grad.addColorStop(clamp(0.45 + shimmerPhase * 0.5, 0, 1), `rgba(220,200,255,${opacity * 0.7})`); // shimmerLight (slightly less)
+  grad.addColorStop(clamp(0.5 + shimmerPhase * 0.5, 0, 1), `rgba(255,255,255,${opacity * 0.9})`);  // shimmerFull (bolder)
+  grad.addColorStop(clamp(0.55 + shimmerPhase * 0.5, 0, 1), `rgba(220,200,255,${opacity * 0.7})`); // shimmerLight
 
   grad.addColorStop(clamp(0.7 + shimmerPhase * 0.5, 0, 1), `rgba(180,150,255,${opacity})`);
   grad.addColorStop(1, `rgba(150,130,255,${opacity})`);
