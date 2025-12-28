@@ -1,19 +1,27 @@
 body {
   margin: 0;
   overflow: hidden;
+  background: #0e0628; /* dark background for contrast */
 }
 
 #wave-svg {
+  position: absolute;
   width: 200%;
-  height: 900px;
-  animation: diagonalMove 10s linear infinite;
+  height: 120%;
+  top: -10%;
+  left: -10%;
+
+  /* Tilt the waves diagonally */
+  transform: rotate(-8deg);
+
+  animation: waveMove 10s linear infinite;
 }
 
-@keyframes diagonalMove {
+@keyframes waveMove {
   from {
-    transform: translate(0, 0);
+    transform: rotate(-8deg) translate(0, 0);
   }
   to {
-    transform: translate(-50%, -80px);
+    transform: rotate(-8deg) translate(-960px, -300px);
   }
 }
