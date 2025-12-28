@@ -6,23 +6,46 @@ body {
 
 #wave-svg {
   position: absolute;
-  width: 2400%;
-  height: 1440%;
-  top: -20%;
-  left: -20%;
-  transform: rotate(-8deg);
+  top: 0;
+  left: 0;
+  width: 300vw;
+  height: 200vh;
+  overflow: visible;
 }
 
-/* Animate the pattern horizontally */
-@keyframes wavePatternMove {
-  from {
-    patternTransform: translateX(0);
-  }
-  to {
-    patternTransform: translateX(-11520px);
-  }
+.wave {
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+  opacity: 0.8;
+  transform-origin: 0 0;
 }
 
-#wavePattern {
-  animation: wavePatternMove 10s linear infinite;
+.wave1 {
+  animation: moveDiag1 12s linear infinite;
+  fill: url(#grad1);
+  opacity: 1;
+}
+.wave2 {
+  animation: moveDiag2 15s linear infinite;
+  fill: url(#grad2);
+  opacity: 0.75;
+}
+.wave3 {
+  animation: moveDiag3 18s linear infinite;
+  fill: url(#grad3);
+  opacity: 0.6;
+}
+
+@keyframes moveDiag1 {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-800px, -400px); }
+}
+@keyframes moveDiag2 {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-1000px, -500px); }
+}
+@keyframes moveDiag3 {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(-1200px, -600px); }
 }
