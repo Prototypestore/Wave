@@ -40,13 +40,16 @@ function clamp(value, min, max) {
 // Gradient for a wave
 function createGradient(x, y, width, height, shimmerPhase, opacity) {
   const grad = ctx.createLinearGradient(x, y, x + width, y + height);
-  grad.addColorStop(0, `rgba(56,15,138,${opacity})`);
-  grad.addColorStop(clamp(0.3 + shimmerPhase * 0.5, 0, 1), `rgba(94,23,235,${opacity})`);
-  grad.addColorStop(clamp(0.45 + shimmerPhase * 0.5, 0, 1), `rgba(204,178,255,${opacity})`);
-  grad.addColorStop(clamp(0.5 + shimmerPhase * 0.5, 0, 1), `rgba(255,255,255,${opacity})`);
-  grad.addColorStop(clamp(0.55 + shimmerPhase * 0.5, 0, 1), `rgba(204,178,255,${opacity})`);
-  grad.addColorStop(clamp(0.7 + shimmerPhase * 0.5, 0, 1), `rgba(94,23,235,${opacity})`);
-  grad.addColorStop(1, `rgba(56,15,138,${opacity})`);
+
+  // Lighter purples and shimmer
+  grad.addColorStop(0, `rgba(150,130,255,${opacity})`);        // light base
+  grad.addColorStop(clamp(0.3 + shimmerPhase * 0.5, 0, 1), `rgba(180,150,255,${opacity})`); // mid-tone
+  grad.addColorStop(clamp(0.45 + shimmerPhase * 0.5, 0, 1), `rgba(220,200,255,${opacity})`); // shimmer light
+  grad.addColorStop(clamp(0.5 + shimmerPhase * 0.5, 0, 1), `rgba(255,255,255,${opacity})`);  // brightest shimmer
+  grad.addColorStop(clamp(0.55 + shimmerPhase * 0.5, 0, 1), `rgba(220,200,255,${opacity})`);
+  grad.addColorStop(clamp(0.7 + shimmerPhase * 0.5, 0, 1), `rgba(180,150,255,${opacity})`);
+  grad.addColorStop(1, `rgba(150,130,255,${opacity})`);
+
   return grad;
 }
 
@@ -64,7 +67,7 @@ function draw(timestamp) {
   const loopTime = (elapsed % animationPeriod) / animationPeriod; // normalized 0-1
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const shimmerPhase = (Math.sin(loopTime * 2 * Math.PI) + 1) / 2;
+ const shimmerPhase = (Math.sin(loopTime * 2 * Math.PI + index * 0.3) + 1) / 2;
 
   const stepX = 2;
 
@@ -81,7 +84,7 @@ function draw(timestamp) {
     ctx.lineTo(0, canvas.height);
     ctx.closePath();
 
-    const opacity = 0.15 + 0.13 * index; // back layers more subtle
+    const opacity = 0.1 + 0.15 * (index + 1); // back layers more subtle
     ctx.fillStyle = createGradient(0, 0, canvas.width, canvas.height, shimmerPhase, opacity);
     ctx.fill();
   });
